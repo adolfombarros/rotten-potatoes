@@ -4,11 +4,11 @@ name: CI-CD
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,15 +25,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Docker Login
-        uses: docker/login-action@v1.10.0
+        uses: docker/login-action@v1.10.0      
         with:
-          username: $(( secrets.DOCKERHUB_USER ))
-          password: $(( secrets.DOCKERHUB_PWD ))
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_PWD }}
       - name: Build and push Docker images
         uses: docker/build-push-action@v2.6.1
-        with:
+        with: 
           context: ./src
           file: ./src/Dockerfile
-          tags:
+          push: true
+          tags: |
             adolfombarros/rotten-potatoes:latest
-            adolfombarros/rotten-potatoes:$((github.run_number))
+            adolfombarros/rotten-potatoes:${{ github.run_number }}
