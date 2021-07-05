@@ -21,7 +21,7 @@ spec:
             - name: MONGODB_DB
               value: admin
             - name: MONGODB_HOST
-              value: mongo-service
+              value: mongodb-service
             - name: MONGODB_PORT
               value: "27017"
             - name: MONGODB_USERNAME
@@ -41,6 +41,25 @@ spec:
   ports:
   - port: 80
     targetPort: 5000
-  type: LoadBalancer
+  type: ClusterIP
   #  nodePort: 30000
   #type: NodePort
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: movies-ingress 
+spec:
+  rules:
+  - host: movies.164.90.253.38.nip.io
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: movies-service
+            port: 
+              number: 80
